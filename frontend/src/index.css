@@ -1441,3 +1441,215 @@ figcaption {
   text-align: center;
   border-top: 1px solid var(--border);
 }
+
+/* Footer (reference-style) ------------------------------------------- */
+.site-footer {
+  position: relative;
+  margin: 64px -24px -96px;
+  padding: 64px 24px 40px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.footer-top-glow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent),
+    var(--accent-2),
+    var(--accent),
+    transparent
+  );
+  opacity: 0.6;
+  box-shadow: 0 0 18px var(--accent);
+}
+
+.footer-grid {
+  max-width: 1132px;
+  margin: 0 auto 48px;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1.35fr;
+  gap: 40px;
+}
+
+.footer-logo {
+  display: inline-flex;
+  margin-bottom: 14px;
+}
+
+.footer-logo-title {
+  margin: 0 0 12px;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.footer-bio {
+  margin: 0 0 20px;
+  max-width: 420px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.footer-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 999px;
+  color: #16a34a;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.footer-status-pill .status-dot {
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #22c55e;
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+.footer-heading {
+  margin: 0 0 20px;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+.footer-nav-sub {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.footer-nav-sub button {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 14px;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-nav-sub .footer-arrow {
+  font-size: 14px;
+  color: var(--text);
+  opacity: 0.5;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.footer-nav-sub button:hover {
+  color: var(--text);
+  transform: translateX(4px);
+}
+
+.footer-nav-sub button:hover .footer-arrow {
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+.social-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.social-icons a {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--accent-2-soft);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.social-icons a:hover {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.footer-bottom-bar {
+  max-width: 1132px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.copyright-text {
+  margin: 0;
+  color: var(--faint);
+  font-size: 13px;
+}
+
+.back-to-top {
+  background: var(--accent-2-soft);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 18px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.25s ease;
+}
+
+.back-to-top:hover {
+  background: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 0 18px var(--accent);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 868px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .site-footer {
+    margin: 40px -24px -96px;
+  }
+}

@@ -19,6 +19,7 @@ import HistorySection from './components/HistorySection'
 import ChatBot from './components/ChatBot'
 import NavBar from './components/NavBar'
 import YantraDefinition from './components/YantraDefinition'
+import Footer from './components/Footer'
 
 type Step = 'yantra' | 'location' | 'parameters'
 
@@ -67,7 +68,10 @@ export default function App() {
   const handleBack = () => {
     computeMutation.reset()
     if (step === 'parameters') setStep('location')
-    else if (step === 'location') setStep('yantra')
+    else if (step === 'location') {
+      setSelectedType(null)
+      setStep('yantra')
+    }
   }
 
   const handleCompute = () => {
@@ -203,6 +207,8 @@ export default function App() {
       )}
 
       <ChatBot />
+
+      {!inExperience && <Footer />}
     </div>
   )
 }
