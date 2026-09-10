@@ -11,6 +11,8 @@ import type {
   InstrumentDto,
   ReferenceSiteDto,
 } from './api/types'
+import { dimensionsSchema } from './lib/schema'
+import HeroSection from './components/HeroSection'
 import InstrumentSelector from './components/InstrumentSelector'
 import LocationForm from './components/LocationForm'
 import ParameterPanel from './components/ParameterPanel'
@@ -20,16 +22,25 @@ import ChatBot from './components/ChatBot'
 import NavBar from './components/NavBar'
 import YantraDefinition from './components/YantraDefinition'
 import Footer from './components/Footer'
+import Yantra3DModal from './components/three/Yantra3DModal'
+import {
+  useGlobalSoundFeedback,
+  useAudioUnlock,
+} from './lib/soundFeedback'
 
 type Step = 'yantra' | 'location' | 'parameters'
 
 export default function App() {
+  useGlobalSoundFeedback()
+  useAudioUnlock()
   const [step, setStep] = useState<Step>('yantra')
   const [selectedType, setSelectedType] = useState<string | null>(null)
+  const [exploreType, setExploreType] = useState<string | null>(null)
   const [location, setLocation] = useState<{ lat: number; long: number }>({
     lat: 26.9239,
     long: 75.8267,
   })
+  const [formError, setFormError] = useState<string | null>(null)
   const [params, setParams] = useState<{
     sizeParam: number
     unit: 'm' | 'ft'
@@ -58,6 +69,7 @@ export default function App() {
   const handleChooseYantra = (type: string) => {
     setSelectedType(type)
     computeMutation.reset()
+    setFormError(null)
     setStep('location')
   }
 
@@ -67,6 +79,7 @@ export default function App() {
 
   const handleBack = () => {
     computeMutation.reset()
+    setFormError(null)
     if (step === 'parameters') setStep('location')
     else if (step === 'location') {
       setSelectedType(null)
@@ -84,14 +97,37 @@ export default function App() {
       unit: params.unit,
       referenceMeridian: params.referenceMeridian,
     }
+    const parsed = dimensionsSchema.safeParse(form)
+    if (!parsed.success) {
+      setFormError(parsed.error.issues[0]?.message ?? 'Please correct the form.')
+      return
+    }
+    setFormError(null)
+    computeMutation.reset()
     computeMutation.mutate(form)
   }
+
+  const handlePickLocation = (lat: number, long: number) => {
+    setLocation({ lat, long })
+    setFormError(null)
+    const el = document.getElementById('yantras')
+    el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    if (selectedType) setStep('location')
+  }
+
+  const exploreInstrument = selected
+    ? instruments.find((i) => i.type === exploreType)
+    : undefined
 
   const result: DimensionsResponse | undefined = computeMutation.data
 
   return (
     <div className="app">
       <NavBar />
+
+      {!inExperience && (
+        <HeroSection onPickLocation={handlePickLocation} defaultLoc={location} />
+      )}
 
       {selected && (
         <YantraDefinition instrument={selected} location={location} params={params} />
@@ -126,6 +162,7 @@ export default function App() {
             instruments={instruments}
             selectedType={selectedType}
             onSelect={handleChooseYantra}
+            onExplore={setExploreType}
           />
         </section>
 
@@ -175,8 +212,13 @@ export default function App() {
                   : 'Compute dimensions'}
             </button>
             {computeMutation.isError && (
-              <p className="error">
+              <p className="error" role="alert">
                 {(computeMutation.error as Error).message}
+              </p>
+            )}
+            {formError && (
+              <p className="error" role="alert">
+                {formError}
               </p>
             )}
           </div>
@@ -207,6 +249,15 @@ export default function App() {
       )}
 
       <ChatBot />
+
+      {exploreInstrument && (
+        <Yantra3DModal
+          instrument={exploreInstrument}
+          location={location}
+          params={params}
+          onClose={() => setExploreType(null)}
+        />
+      )}
 
       {!inExperience && <Footer />}
     </div>

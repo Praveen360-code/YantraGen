@@ -63,8 +63,8 @@ export default function Footer() {
         <div className="footer-brand-col">
           <h3 className="footer-logo-title">Praveen Pilla</h3>
           <p className="footer-bio">
-            2nd yr Data Science student at Gitam University. Interested in
-            AI/ML, Deep Learning, UI/UX design. Specialized in building
+            Creator of YantraGen. Interested in AI/ML, Deep Learning and LLM's.
+            Currently working on Java, DSA and SQL. Specialized in building
             impactful websites that address real-world needs.
           </p>
           <div className="footer-status-pill">
@@ -104,8 +104,47 @@ export default function Footer() {
         </div>
       </div>
 
+      <div className="footer-method">
+        <h4 className="footer-method-title">About this tool</h4>
+        <p>
+          YantraGen is an educational and research resource that reconstructs
+          the geometry of the fixed astronomical instruments built by Maharaja
+          Sawai Jai Singh II at the observatories of Jaipur, Delhi, Ujjain,
+          Varanasi and Mathura (c. 1724–1734). Every instrument is derived from
+          the observer's latitude — which fixes its tilt and hour scales — while
+          longitude determines the correction from the reference meridian
+          (IST 82.5°E; the historic Ujjain meridian 75.7°E). The computations
+          are documented per value, and dimensions were validated against the
+          published measurements of the Jaipur and Delhi instruments. It is not
+          intended for precision timekeeping.
+        </p>
+        <div className="footer-sources">
+          <a
+            href="https://en.wikipedia.org/wiki/Jantar_Mantar,_Jaipur"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Jantar Mantar, Jaipur — UNESCO site
+          </a>
+          <a
+            href="https://www.jantarmantar.org/learn/observatories/instruments/samrat/index.html"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Samrat Yantra — JantarMantar.org
+          </a>
+          <a
+            href="https://ui.adsabs.harvard.edu/abs/2026asi..confP.203S/abstract"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            G.R. Kaye, Guide to the Old Observatories
+          </a>
+        </div>
+      </div>
+
       <div className="footer-bottom-bar container">
-        <p className="copyright-text">© 2026 Praveen Pilla</p>
+        <p className="copyright-text">© 2026 Praveen Pilla · YantraGen</p>
         <button className="back-to-top" onClick={scrollToTop} aria-label="Back to top">
           Back to Top ↑
         </button>

@@ -1,7 +1,7 @@
-import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet'
-import L from 'leaflet'
-import { useEffect, useMemo, useRef, useState, useCallback } from 'react'
+import { lazy, Suspense, useState, useCallback, useRef } from 'react'
 import type { ReferenceSiteDto } from '../api/types'
+
+const LocationMap = lazy(() => import('./LocationMap'))
 
 interface LatLng {
   lat: number
@@ -17,65 +17,20 @@ interface Props {
   active?: boolean
 }
 
-// Restrict the map view to around India's extent.
-const INDIA_BOUNDS: [[number, number], [number, number]] = [
-  [6, 68],
-  [37, 97],
-]
+// India extent (mirrors backend validation).
+const RANGE = { lat: { min: 6, max: 37 }, long: { min: 68, max: 97 } }
 
-function ClickHandler({ onChange }: { onChange: (v: LatLng) => void }) {
-  const map = useMap()
-  useMapEvents({
-    click(e) {
-      const latlng = { lat: Number(e.latlng.lat.toFixed(4)), long: Number(e.latlng.lng.toFixed(4)) }
-      onChange(latlng)
-      map.setView([latlng.lat, latlng.long])
-    },
-  })
+function boundsError(lat: number, long: number): string | null {
+  if (!Number.isFinite(lat) || !Number.isFinite(long)) {
+    return 'Both coordinates are required.'
+  }
+  if (lat < RANGE.lat.min || lat > RANGE.lat.max) {
+    return `Latitude must be ${RANGE.lat.min}°N–${RANGE.lat.max}°N (India).`
+  }
+  if (long < RANGE.long.min || long > RANGE.long.max) {
+    return `Longitude must be ${RANGE.long.min}°E–${RANGE.long.max}°E (India).`
+  }
   return null
-}
-
-function Recenter({ lat, long }: LatLng) {
-  const map = useMap()
-  const initial = useRef(true)
-
-  useEffect(() => {
-    const t = window.setTimeout(() => {
-      map.invalidateSize()
-      map.setView([lat, long], map.getZoom())
-    }, 0)
-    return () => window.clearTimeout(t)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    if (initial.current) {
-      initial.current = false
-      return
-    }
-    // Debounce recentring so typing in the coordinate fields doesn't
-    // fire a tile-download storm on every keystroke.
-    const t = window.setTimeout(() => {
-      map.setView([lat, long], map.getZoom())
-    }, 400)
-    return () => window.clearTimeout(t)
-  }, [lat, long, map])
-
-  return null
-}
-
-function MarkerView({ position }: { position: [number, number] }) {
-  const icon = useMemo(
-    () =>
-      L.icon({
-        iconUrl:
-          'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-      }),
-    [],
-  )
-  return <Marker position={position} icon={icon} />
 }
 
 function useGeolocation(onFound: (v: LatLng) => void) {
@@ -143,6 +98,8 @@ export default function LocationForm({
   yantraName,
   active = true,
 }: Props) {
+  const latErr = boundsError(value.lat, value.long)
+
   const handleSite = (id: string) => {
     const site = sites.find((s) => s.id === id)
     if (site) onChange({ lat: site.lat, long: site.lon })
@@ -155,11 +112,24 @@ export default function LocationForm({
           Building: <strong>{yantraName}</strong>
         </p>
       )}
+
       <LocateButton onFound={(v) => onChange(v)} />
+
+      <p className="explain-note">
+        <strong>Why it matters:</strong> the latitude of an observatory fixes
+        every angle of a yantra — the gnomon's tilt toward the celestial pole,
+        its height, and its hour scales. Longitude sets the offset of local
+        apparent solar time from the reference meridian. Choose a historical
+        observatory below, or place your own site within India.
+      </p>
 
       <label className="field">
         <span className="field-label">Or pick a historical site</span>
-        <select onChange={(e) => handleSite(e.target.value)} defaultValue="">
+        <select
+          onChange={(e) => handleSite(e.target.value)}
+          defaultValue=""
+          aria-label="Historical observatory"
+        >
           <option value="" disabled>
             — Reference observatory —
           </option>
@@ -173,25 +143,20 @@ export default function LocationForm({
 
       <div className="map-wrap">
         {active && (
-          <MapContainer
-            center={[value.lat, value.long]}
-            zoom={5}
-            minZoom={4}
-            style={{ height: '100%', width: '100%' }}
-            maxBounds={INDIA_BOUNDS}
-            maxBoundsViscosity={1.0}
-            attributionControl={false}
+          <Suspense
+            fallback={<div className="viewer-loading">Loading map…</div>}
           >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            <LocationMap
+              value={value}
+              sites={sites}
+              onChange={onChange}
+              active={active}
             />
-            <Recenter lat={value.lat} long={value.long} />
-            <ClickHandler onChange={onChange} />
-            <MarkerView position={[value.lat, value.long]} />
-          </MapContainer>
+          </Suspense>
         )}
         <p className="map-hint">
-          Click the map (restricted to India) or enter coordinates manually.
+          Click the map (India only), tap a gold pin for a historic observatory,
+          or enter coordinates manually.
         </p>
       </div>
 
@@ -201,9 +166,10 @@ export default function LocationForm({
           <input
             type="number"
             step="0.0001"
-            min={6}
-            max={37}
+            min={RANGE.lat.min}
+            max={RANGE.lat.max}
             value={value.lat}
+            aria-invalid={latErr ? 'true' : 'false'}
             onChange={(e) => onChange({ ...value, lat: Number(e.target.value) })}
           />
         </label>
@@ -212,15 +178,25 @@ export default function LocationForm({
           <input
             type="number"
             step="0.0001"
-            min={68}
-            max={97}
+            min={RANGE.long.min}
+            max={RANGE.long.max}
             value={value.long}
+            aria-invalid={latErr ? 'true' : 'false'}
             onChange={(e) => onChange({ ...value, long: Number(e.target.value) })}
           />
         </label>
       </div>
+      {latErr && (
+        <p className="field-error" role="alert">
+          {latErr}
+        </p>
+      )}
 
-      <button className="btn btn-primary btn-block" onClick={onNext}>
+      <button
+        className="btn btn-primary btn-block"
+        onClick={onNext}
+        disabled={Boolean(latErr)}
+      >
         Continue to parameters →
       </button>
     </div>

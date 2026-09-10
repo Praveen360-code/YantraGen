@@ -1,4 +1,4 @@
-"""Gemini-backed chat service for the Yantra AI bot.
+"""Gemini-backed chat service for the YantraGen bot.
 
 Serves a context-aware conversational assistant grounded in the YantraGen
 knowledge base. The system prompt injects the website's content so the bot can
@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import os
 
-SYSTEM_PROMPT = """You are "Yantra AI Bot", the intelligent assistant for YantraGen — an
+SYSTEM_PROMPT = """You are "YantraGen Bot", the intelligent assistant for YantraGen — an
 educational web app that computes and visualises the dimensions of ancient
 Indian astronomical instruments (yantras) for any latitude/longitude in India.
 

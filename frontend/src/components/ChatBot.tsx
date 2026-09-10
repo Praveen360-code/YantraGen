@@ -10,7 +10,7 @@ export default function ChatBot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       from: 'bot',
-      text: 'Namaste! I am the Yantra AI Bot. Ask me about any yantra, the history of Jantar Mantar, the geometry, or how to use this app.',
+      text: 'Namaste! I am the YantraGen Bot. Ask me about any yantra, the history of Jantar Mantar, the geometry, or how to use this app.',
     },
   ])
   const [thinking, setThinking] = useState(false)
@@ -84,15 +84,15 @@ export default function ChatBot() {
   return (
     <div className={`chatbot ${open ? 'chatbot-open' : ''}`}>
       {open && (
-        <div className="chatbot-window">
+        <div className="chatbot-window" role="dialog" aria-label="YantraGen chat">
           <div className="chatbot-head">
             <YantraLogo size={22} />
-            <span>Yantra AI Bot</span>
-            <button className="chatbot-close" onClick={() => setOpen(false)}>
+            <span>YantraGen Bot</span>
+            <button className="chatbot-close" onClick={() => setOpen(false)} aria-label="Close chat">
               ×
             </button>
           </div>
-          <div className="chatbot-body" ref={bodyRef}>
+          <div className="chatbot-body" ref={bodyRef} aria-live="polite">
             {messages.map((m, i) => (
               <div key={i} className={`chat-msg chat-${m.from}`}>
                 {m.text}
@@ -118,8 +118,8 @@ export default function ChatBot() {
       <button
         className="chatbot-fab"
         onClick={() => setOpen((o) => !o)}
-        title="Chat with Yantra AI"
-        aria-label="Open Yantra AI chat"
+        title="Chat with YantraGen"
+        aria-label="Open YantraGen chat"
       >
         <YantraLogo size={30} />
       </button>

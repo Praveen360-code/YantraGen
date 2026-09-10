@@ -10,7 +10,7 @@ export default function YantraLogo({ size = 34 }: Props) {
       height={size}
       viewBox="0 0 64 64"
       role="img"
-      aria-label="Yantra AI"
+      aria-label="YantraGen"
     >
       {/* Outer circle — celestial sphere */}
       <circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" strokeWidth="2.5" />

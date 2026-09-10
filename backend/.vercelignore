@@ -1,0 +1,12 @@
+.vercel
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+*.egg-info
+tests
+*.log
+.env
+.env.example
+Dockerfile
+.dockerignore

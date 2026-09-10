@@ -58,11 +58,33 @@ export default function ResultsView({ result, loading, form }: Props) {
     })
   }
 
+  // Deterministic dummy values for the loading skeleton.
   return (
     <div className="results-panel">
       <h2 className="panel-title">Results</h2>
 
-      {loading && <div className="spinner">Computing geometry…</div>}
+      {loading && (
+        <div className="results-loading" aria-live="polite" aria-busy="true">
+          <div className="spinner">Computing geometry…</div>
+          <table className="skeleton-table" aria-hidden="true">
+            <tbody>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <tr key={i} className="skeleton-row">
+                  <td style={{ width: '38%' }}>
+                    <span className="skeleton" style={{ width: '85%' }} />
+                  </td>
+                  <td style={{ width: '26%' }}>
+                    <span className="skeleton" style={{ width: '60%' }} />
+                  </td>
+                  <td>
+                    <span className="skeleton" style={{ width: '75%' }} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {!loading && !result && (
         <div className="empty">
@@ -140,6 +162,18 @@ export default function ResultsView({ result, loading, form }: Props) {
               ))}
             </div>
           </div>
+
+          {/* References / methodology */}
+          {result.meta.references && result.meta.references.length > 0 && (
+            <div className="card">
+              <h4>References &amp; derivation</h4>
+              <ul className="reference-list">
+                {result.meta.references.map((ref, i) => (
+                  <li key={i}>{ref}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Comparison mode */}
           <div className="card">

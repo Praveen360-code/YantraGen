@@ -312,21 +312,26 @@ export default function HistorySection({
 
       {open && HISTORIES[open] && (
         <div className="history-card">
-          <h3 className="history-title">{HISTORIES[open].title}</h3>
-          <p className="history-meta">
-            <span className="history-builder">{HISTORIES[open].builder}</span>
-            <span className="history-built">{HISTORIES[open].built}</span>
-          </p>
-          <div className="history-items">
+          <div className="history-headline">
+            <h3 className="history-title">{HISTORIES[open].title}</h3>
+            <div className="history-meta">
+              <span className="history-builder">{HISTORIES[open].builder}</span>
+              <span className="history-built">{HISTORIES[open].built}</span>
+            </div>
+          </div>
+          <div className="history-timeline">
             {HISTORIES[open].items.map((it, i) => (
-              <div className="history-item" key={i}>
-                <div className="history-problem">
-                  <span className="history-tag">The Problem</span>
-                  <p>{it.problem}</p>
-                </div>
-                <div className="history-solution">
-                  <span className="history-tag history-tag-sol">The Solution</span>
-                  <p>{it.solution}</p>
+              <div className="history-tl-item" key={i}>
+                <span className="history-tl-node" aria-hidden="true" />
+                <div className="history-card-body">
+                  <div className="history-tl-step">
+                    <span className="history-tag">Problem {i + 1}</span>
+                    <p>{it.problem}</p>
+                  </div>
+                  <div className="history-tl-step">
+                    <span className="history-tag history-tag-sol">Solution</span>
+                    <p>{it.solution}</p>
+                  </div>
                 </div>
               </div>
             ))}
@@ -335,7 +340,7 @@ export default function HistorySection({
           {HISTORIES[open].onlineResources &&
             HISTORIES[open].onlineResources.length > 0 && (
               <div className="history-resources">
-                <h4 className="history-resources-title">Online resources</h4>
+                <h4 className="history-resources-title">Archive &amp; resources</h4>
                 <ul className="history-resources-list">
                   {HISTORIES[open].onlineResources.map((r, i) => (
                     <li key={i}>
