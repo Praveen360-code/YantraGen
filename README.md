@@ -13,42 +13,22 @@ how the geometry changes as you move north or south.
 
 ## Background
 
-The Jantar Mantar observatories built by Sawai Jai Singh II (Delhi, Jaipur,
-Varanasi, Ujjain, Mathura) house fixed stone instruments whose geometry is
-derived from the local latitude:
+Sawai Jai Singh II’s Jantar Mantar observatories (Delhi, Jaipur, Varanasi,
+Ujjain, Mathura) house fixed stone instruments whose geometry is derived from
+the local latitude. The **Samrat Yantra** — a giant right-triangular gnomon
+inclined at latitude **φ** and thus parallel to Earth’s axis — reads **local
+apparent solar time** as its shadow sweeps two curved quadrants at a constant
+rate. Every other yantra follows the same core idea: **latitude sets the tilt,
+longitude sets the time offset** from the reference meridian (historically
+Ujjain, now IST at 82.5°E).
 
-- The **Samrat Yantra** (equinoctial sundial) is a giant right-triangular
-  gnomon whose hypotenuse is inclined by the latitude **φ** so it runs parallel
-  to Earth’s axis. Its shadow sweeps across two curved quadrants at a constant
-  rate, reading **local apparent solar time**.
-- Other yantras measure solar altitude / azimuth, declination at noon, etc.
-  They all share the same core idea: **latitude sets the tilt, longitude sets
-  the time offset** from the reference meridian (historically Ujjain, now
-  IST at 82.5°E).
-
-### Geometry (Samrat, the reference implementation)
-
-For a gnomon hypotenuse (slant) of length **H** at latitude **φ**:
-
-| Quantity | Formula | Meaning |
-|---|---|---|
-| Vertical gnomon height | `H · sin φ` | right-triangle in meridian plane |
-| Horizontal base length | `H · cos φ` | projection of the slant |
-| Hypotenuse inclination | `φ` | equals local latitude (parallel to polar axis) |
-| Quadrant radius | `R = H` | arc passes through the foot of the gnomon |
-| Hour-line spacing | `15°` per hour | curved quadrant sweeps uniformly with hour angle |
-| Longitude time offset | `(refMeridian − lon) / 15` hours | longitude correction |
-
-The two compass points above mean the Samrat produces **correctly scaled
-dimensions** for any user-selected size — from a tabletop replica to a
-monumental instrument — because every length scales linearly with **H** while
-every angle is fixed by **φ**.
-
-These relationships and their citable sources (G.R. Kaye’s *Guide to the Old
-Observatories*; Virendra Sharma’s *Sawai Jai Singh and His Astronomy*) are
-documented in the code (`backend/app/yantras/samrat.py`) so results are
-auditable, and validated against the published Jaipur / Delhi dimensions in
-the test suite.
+Because every length scales linearly with the gnomon slant **H** while every
+angle is fixed by **φ**, dimensions are correctly scaled for any user-selected
+size — from a tabletop replica to a monumental instrument. These relationships
+and their citable sources (G.R. Kaye’s *Guide to the Old Observatories*;
+Virendra Sharma’s *Sawai Jai Singh and His Astronomy*) are documented in
+`backend/app/yantras/samrat.py` and validated against the published Jaipur /
+Delhi dimensions in the test suite.
 
 ---
 
